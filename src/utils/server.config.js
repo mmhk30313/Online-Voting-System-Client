@@ -1,0 +1,1 @@
+export const live_server = "http://localhost:8000/api";
