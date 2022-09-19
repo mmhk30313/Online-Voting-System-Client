@@ -49,13 +49,28 @@ export const apiSlice = createApi({
         //     ],
         // }),
 
-        createAdmin: builder.mutation({
-            query: (newAdmin) => ({
-                url: "/admins",
+        getElections: builder.query({
+            query: () => "/user/election",
+            providesTags: ['elections']
+
+        }),
+
+        createElection: builder.mutation({
+            query: (newElection) => ({
+                url: "/user/election",
                 method: "POST",
-                body: newAdmin,
+                body: newElection,
             }),
-            invalidatesTags: ["admins"],
+            invalidatesTags: ["admins", "users", "elections"],
+        }),
+        
+        updateElection: builder.mutation({
+            query: (election) => ({
+                url: "/user/election",
+                method: "PUT",
+                body: election,
+            }),
+            invalidatesTags: ["admins", "users", "elections"],
         }),
         
         addUser: builder.mutation({
@@ -124,11 +139,14 @@ export const {
     useBulkDeleteUsersMutation,
     useBulkUpdateStatusMutation,
     // query hooks
+    useGetElectionsQuery,
     useGetAdminsQuery,
     useGetUserQuery,
     useGetUsersQuery,
     // login-sign-up hooks
-    useCreateAdminMutation,
+    // useCreateAdminMutation,
+    useCreateElectionMutation,
+    useUpdateElectionMutation,
     useAddUserMutation,
     useEditUserMutation,
     useDeleteUserMutation

@@ -4,10 +4,11 @@ import AddElection from './Election/AddElection';
 import ViewElections from './Election/ViewElections';
 import ViewUsers from './UserManagement/ViewUsers';
 import AddUser from './UserManagement/AddUser';
+import { admin_panels } from '../../utils/admin.panels';
 
 const AdminPanel = () => {
     const [panelState, setPanelState] = React.useState(null);
-    const panels = [{route: "add-user", title: "Add User"}, {route: "add-election", title: "Add Election"}, {route: "view-elections", title: "View Elections"}, {route: "view-users", title: "View Users"}];
+    const panels = admin_panels;
     const param = useParams();
     const { panel } = param;
     useEffect(() => {
@@ -26,7 +27,8 @@ const AdminPanel = () => {
     }else if(panelState === "view-users"){
         panelContent = <ViewUsers />;
     }else{
-        panelContent = <div className='h-[60vh] flex flex-col items-center justify-center text-center text-2xl font-bold text-gray-700'>
+        panelContent = <div className='lg:h-[45vh] flex flex-col items-center justify-center text-center text-2xl font-bold text-gray-700'
+        >
             <h1 
                 className='uppercase text-indigo-500 italic
                     text-3xl font-semibold 
@@ -51,21 +53,23 @@ const AdminPanel = () => {
     return (
         <React.Fragment>
             <div 
-                className='min-h-[70vh]'
+                className='min-h-[60vh]'
             >
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3'>
+                <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3'>
                     {
                         panels?.map(item => {
                             return (
-                                <div key={item.route} className='flex flex-col items-center justify-center'>
+                                <div key={item.route} className='w-full flex flex-col items-center justify-center'>
                                     <Link to={`/admin/${item.route}`}
-                                        className={`w-[200px] bg-violet-200 text-gray-700
+                                        className={`w-full bg-violet-200 text-gray-700
                                             rounded-lg shadow-lg uppercase text-center
                                             flex items-center justify-center p-4 cursor-pointer
-                                            ${panelState === item?.route ? "bg-indigo-500 text-red-200" : ""}
+                                            ${panelState === item?.route ? "bg-blue-500 text-red-200" : ""}
                                             hover:bg-indigo-500 
-                                            hover:text-white text-lg italic font-bold
+                                            hover:text-white italic font-bold
                                             transition-all ease-in-out duration-500
+                                            lg:text-lg md:text-md sm:text-sm xs:text-xs
+                                            text-[10px]
                                         `}
                                     >
                                         {item.title}
@@ -75,6 +79,7 @@ const AdminPanel = () => {
                         })
                     }
                 </div>
+                <hr className="border-b my-5" />
                 {
                     panelContent
                 }

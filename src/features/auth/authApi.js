@@ -54,6 +54,46 @@ export const authApi = apiSlice.injectEndpoints({
                 }
             },
         }),
+        
+        userRegister: builder.mutation({
+            query: (data) => ({
+                url: "/user/signup",
+                method: "POST",
+                body: data,
+            }),
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled;
+                    const { data, status, message } = result?.data;
+                    console.log({ data, status, message });
+                    if(status){
+                        console.log({arg_data: arg});
+                        // get all users
+                        dispatch(
+                            apiSlice.util.updateQueryData(
+                                "getUsers",
+                                arg?.email,
+                                (draft) => {
+                                    draft.data.push(data?.user);
+                                    return draft;
+                                }
+                            )
+                        );
+                        
+                    }
+
+                } catch (err) {
+                    // do nothing
+                    console.log({ err });
+                    // const {message} = err?.error?.data;
+                    // dispatch(
+                    //     authError( {
+                    //         error: message,
+                    //     })
+                    // )
+                }
+            },
+        }),
 
         login: builder.mutation({
             query: (data) => ({
@@ -134,4 +174,4 @@ export const authApi = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation, useUserRegisterMutation } = authApi;
