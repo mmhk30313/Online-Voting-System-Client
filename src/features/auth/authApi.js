@@ -3,6 +3,7 @@ import { userLoggedIn, userLoggedOut, authError } from "./authSlice";
 
 export const authApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
+        // user endpoints
         register: builder.mutation({
             query: (data) => ({
                 url: "/user/signup",

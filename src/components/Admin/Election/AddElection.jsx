@@ -2,28 +2,25 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import Select from 'react-select';
-import { useCreateElectionMutation } from '../../../features/api/apiSlice';
-
-const options = [
-  {value: 'user-1', label: 'User-1' },
-  {value: 'user-2', label: 'User-2'},
-  {value: 'user-3', label: 'User-3'},
-  {value: 'user-4', label: 'User-4'}
-];
+import { useGetActiveElectionGroupQuery } from '../../../features/api/apiSlice';
+import { useCreateElectionMutation } from '../../../features/election/electionApi';
+// import { useCreateElectionMutation } from '../../../features/api/apiSlice';
 
 const AddElection = () => {
     const {auth} = useSelector(state => state?.auth)
-     const [message, setMessage] = React.useState(null);
+    const [message, setMessage] = React.useState(null);
     const [currentCandidates, setCurrentCandidates] = React.useState([]);
-    
+    const [candidateOptions, setCandidateOptions] = React.useState([]);
+    const {data: activeElectionGroups} = useGetActiveElectionGroupQuery();
     const [createElection, {data: electionData, isSuccess, isError }] = useCreateElectionMutation();
+
 
     useEffect(() => {
         console.log({electionData, isError, isSuccess});
         const our_message = electionData?.data?.message
                 ? {color: "red", value: electionData?.data?.message} 
                 : isSuccess 
-                ? {color: 'green', value: electionData?.message}
+                ? {color: 'blue', value: electionData?.message}
                 :  null;
         console.log({our_message});
         if(our_message) {
@@ -35,23 +32,32 @@ const AddElection = () => {
         }
     },[electionData, isSuccess]);
 
+    useEffect(() => {
+        const our_options = activeElectionGroups?.data?.map((group) => {
+            return {value: group?.group_id, label: group?.title}
+        });
+        if(our_options?.length) {
+            setCandidateOptions(our_options);
+        }
+    }, [activeElectionGroups]);
 
+
+    console.log({electionData, activeElectionGroups});
     const handleSubmit = (e) => {
         e.preventDefault();
         const { title, description, status } = e?.target?.elements;
 
-        console.log({currentCandidates});
         const dataObj = {
+            election_id: "election-"+Number(new Date()),
             title: title?.value,
-            description: description?.value,
+            description: description?.value || "",
             status: status?.value,
             candidates: currentCandidates,
-            user_email: auth?.email
         };
 
         console.log(dataObj);
         
-        // userRegister(dataObj);
+        createElection(dataObj);
 
     }
 
@@ -81,24 +87,25 @@ const AddElection = () => {
                         autoCorrect='on'
                     >
                         <div className='flex flex-col gap-y-2'>
-                            <label htmlFor='title' className='text-indigo-500 uppercase italic font-bold tracking-wide'>Election Title</label>
+                            <label className='text-indigo-500 uppercase italic font-bold tracking-wide'>Election Title</label>
                             <input
                                 type='text'
                                 name='title'
                                 id='title'
-                                className='border border-gray-400 rounded p-2 text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ease-in-out duration-500'
+                                className='border border-gray-400 rounded px-2 py-[5.5px] text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0481fd] transition-all ease-in-out duration-500'
                                 placeholder='Enter election title'
                                 required
                             />
                         </div>
 
                         <div className='flex flex-col gap-y-2'>
-                            <label htmlFor='candidate_id' className='text-indigo-500 uppercase italic font-bold tracking-wide'>Candidates</label>
+                            <label className='text-indigo-500 uppercase italic font-bold tracking-wide'>Candidates</label>
                             <Select
-                                options={options}
+                                options={candidateOptions}
                                 name='candidates'
                                 id='candidates'
                                 // value={currentCandidates}
+                                className='text-gray-700 bg-gray-50 placeholder-gray-400'
                                 // className='border border-gray-400 rounded p-2 text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ease-in-out duration-500'
                                 placeholder='Select candidates'
                                 onChange={(items) =>{
@@ -117,30 +124,53 @@ const AddElection = () => {
                         </div>
 
                         <div className='flex flex-col gap-2'>
-                            <label className='text-indigo-500 uppercase italic font-bold tracking-wide' htmlFor='description'>Description</label>
-                            <textarea type='text' 
-                                name='description' 
-                                id='description'
-                                placeholder='Enter description' 
-                                // required
-                                rows={4}
-                                className='border border-gray-400 rounded p-2 text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ease-in-out duration-500'
-                            />
-                        </div>
-
-                        <div className='flex flex-col gap-2'>
-                            <label className='text-indigo-500 uppercase italic font-bold tracking-wide' htmlFor='status'>Status</label>
-                            <select type='text'
+                            <label className='text-indigo-500 uppercase italic font-bold tracking-wide'>Status</label>
+                            <div>
+                                <input
+                                    type='radio'
+                                    name='status'
+                                    id='status'
+                                    value='active'
+                                    className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:rounded-full focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
+                                    required
+                                />
+                                <label htmlFor='status' className='ml-2 text-sm font-medium text-gray-900 dark:text-gray-300'>Active</label>
+                            </div>
+                            <div>
+                                <input
+                                    type='radio'
+                                    name='status'
+                                    id='status'
+                                    value='inactive'
+                                    className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:rounded-full outline-none focus:ring-blue-500 focus:ring-2 '
+                                    required
+                                />
+                                <label htmlFor='status' className='ml-2 text-sm font-medium text-gray-900 dark:text-gray-300'>Inactive</label>
+                            </div>
+                            
+                            {/* <select type='text'
                                 name='status' 
                                 id='status' 
                                 required
                                 placeholder='Select status'
-                                className='border border-gray-400 rounded p-2 text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ease-in-out duration-500'
+                                className='border border-gray-400 rounded p-2 text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0481fd] focus:border-transparent transition-all ease-in-out duration-500'
                             > 
                                 <option value=''>Select status</option>
                                 <option value='active'>Active</option>
                                 <option value='inactive'>Inactive</option>
-                            </select>
+                            </select> */}
+                        </div>
+
+                        <div className='flex flex-col gap-2'>
+                            <label className='text-indigo-500 uppercase italic font-bold tracking-wide'>Description</label>
+                            <textarea type='text' 
+                                name='description' 
+                                id='description'
+                                placeholder='Write description' 
+                                // required
+                                rows={5}
+                                className='border border-gray-400 rounded p-2 text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0481fd] focus:border-transparent transition-all ease-in-out duration-500'
+                            />
                         </div>
                         
                     </form>
@@ -156,7 +186,7 @@ const AddElection = () => {
                     {
                         !message
                         ? null 
-                        : <p className={`text-center text-${message?.color}-500`}>{message?.value}</p>
+                        : <p className={`text-center text-${message?.color}-700`}>{message?.value}</p>
                     }
                 </div>
             </div>

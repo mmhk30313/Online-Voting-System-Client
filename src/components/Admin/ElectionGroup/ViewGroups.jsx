@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import {DebounceInput} from 'react-debounce-input';
-// import { Link } from 'react-router-dom';
-import { useGetActiveElectionGroupQuery, useGetElectionsQuery } from '../../../features/api/apiSlice';
+import { Link } from 'react-router-dom';
+import { useGetElectionGroupsQuery } from '../../../features/api/apiSlice';
 import Select  from 'react-select';
-import { useBulkUpdateElectionsMutation, useUpdateElectionGroupMutation, useUpdateElectionMutation } from '../../../features/election/electionApi';
+import { useBulkUpdateElectionGroupsMutation, useUpdateElectionGroupMutation } from '../../../features/election/electionApi';
 import ViewListLoader from '../../Loaders/ViewListLoader';
 const statusOptions = [
     { value: 'active', label: 'Active' },
@@ -11,48 +11,40 @@ const statusOptions = [
 ];
 
 
-const ViewElections = () => {
-    const [editableElectionId, setEditableElectionId] = React.useState(null);
-    const [selectedElections, setSelectedElections] = React.useState([]);
-    const [elections, setElections] = React.useState([]);
-    const {data: activeElectionGroups} = useGetActiveElectionGroupQuery();
+const ViewGroups = () => {
+    const [editableGroupId, setEditableGroupId] = React.useState(null);
+    const [selectedGroups, setSelectedGroups] = React.useState([]);
     const [groups, setGroups] = React.useState([]);
-    const {data: electionData} = useGetElectionsQuery();
-    const [updateElection, {isError: isUpdateError}] = useUpdateElectionMutation();
-    const [bulkUpdateElections, {isLoading: isBulkLoading, isSuccess, isError }] = useBulkUpdateElectionsMutation();
+    const {data: electionGroups} = useGetElectionGroupsQuery();
+    const [bulkUpdateElectionGroups, {isLoading: isBulkLoading, isSuccess, isError }] = useBulkUpdateElectionGroupsMutation();
+    const [updateElectionGroup, { isSuccess: isUpdateSuccess, isError: isUpdateError }] = useUpdateElectionGroupMutation();
     useEffect(() => {
-        const our_elections = electionData?.data;
-        if(our_elections?.length) {
-            setElections(our_elections);
-            // setEditableElectionId(null);
-            setSelectedElections([]);
-        }
-
-        if(activeElectionGroups?.data?.length){
-            const our_groups = activeElectionGroups?.data?.map((group) => {
-                return {value: group?.group_id, label: group?.title}
-            });
+        console.log({groups: electionGroups?.data});
+        const our_groups = electionGroups?.data;
+        if(our_groups?.length) {
             setGroups(our_groups);
+            // setEditableGroupId(null);
+            setSelectedGroups([]);
         }
-    }, [electionData, activeElectionGroups, isUpdateError, isSuccess, isError]);
+    }, [electionGroups, isUpdateSuccess, isSuccess, isError, isUpdateError]);
 
-    // console.log({electionData});
+    // console.log({electionGroups});
     return (
         <React.Fragment>
             <div className='min-h-[55vh] w-full bg-gray-300 rounded p-5'>
                 <div className='flex justify-between items-center'>
-                    <h1 className='text-center text-2xl font-bold text-gray-700 uppercase mb-5'>Election List</h1>
+                    <h1 className='text-center text-2xl font-bold text-gray-700 uppercase mb-5'>Election Candidate List</h1>
                     {
-                        selectedElections?.length > 0 && (
+                        selectedGroups?.length > 0 && (
                             <div className='my-2 flex flex-row'>
                                 <Select
                                     options={statusOptions}
                                     placeholder='Select status'
                                     onChange={(bulkStatus) => {
                                         const status = bulkStatus?.value;
-                                        const election_ids = [...selectedElections];
-                                        // console.log({status, election_ids});
-                                        bulkUpdateElections({status, election_ids});
+                                        const group_ids = [...selectedGroups];
+                                        console.log({status, group_ids});
+                                        bulkUpdateElectionGroups({status, group_ids});
                                     }}
                                 >
                                     {
@@ -70,7 +62,7 @@ const ViewElections = () => {
 
                 <div className='grid grid-cols-1 gap-3 h-[45vh] overflow-auto'>
                         {
-                            (!elections?.length || isBulkLoading) ? (
+                            (!groups?.length || isBulkLoading) ? (
                                 <div className='w-full'>
                                     <ViewListLoader/>
                                     <ViewListLoader/>
@@ -83,40 +75,40 @@ const ViewElections = () => {
                                 '>
                                     <thead>
                                         <tr className='bg-gray-200'>
-                                            <th className='p-2'>
+                                            <th className='flex flex-row gap-x-2 items-center justify-center py-3'>
                                                 <input
                                                     onChange={(e) => {
                                                         const { checked } = e.target;
-                                                        const newSelectedElectrons = checked ? elections.map((election) => election.election_id) : [];
-                                                        setSelectedElections(newSelectedElectrons);
-                                                        // setElections(elections.map((election) => ({ ...election, checked })));
+                                                        const newSelectedGroups = checked ? groups.map((group) => group.group_id) : [];
+                                                        setSelectedGroups(newSelectedGroups);
+                                                        // setGroups(groups.map((group) => ({ ...group, checked })));
                                                     }}
                                                     className='w-4 h-4 rounded-lg'
                                                     type='checkbox'
                                                     name='select_all'
                                                     id='select_all'
-                                                    checked={selectedElections?.length ? true : false}
+                                                    checked={selectedGroups?.length ? true : false}
                                                 />
                                             </th>
                                             <th className='p-2'>Title</th>
                                             <th className='p-2 text-left'>Admin Email</th>
                                             <th className='p-2 text-left'>Description</th>
                                             <th className='p-2'>Status</th>
-                                            <th className='p-2'>Candidates</th>
+                                            <th className='p-2'>Members</th>
                                             <th className='p-2'>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                         {
-                                            elections?.map((item, idx) => {
+                                            groups?.map((item, idx) => {
                                                 return (
-                                                    <tr key={item?.election_id} className={`
+                                                    <tr key={item?.group_id} className={`
                                                             bg-gray-70 hover:bg-gray-100 
-                                                            ${selectedElections?.includes(item?.election_id) ? 'bg-gray-100' : ''}
+                                                            ${selectedGroups?.includes(item?.group_id) ? 'bg-gray-100' : ''}
                                                             ${idx % 2 === 0 ? 'bg-gray-28' : 'bg-gray-50'}
                                                             text-center border-b-[3px] 
-                                                            ${((idx+1) !== elections?.length && "border-blue-400")} 
+                                                            ${((idx+1) !== electionGroups?.totalCount && "border-blue-400")} 
                                                             transition-all ease-in-out duration-300`
                                                         }
                                                     >
@@ -124,10 +116,10 @@ const ViewElections = () => {
                                                             <input
                                                                 onChange={(e) => {
                                                                     const { checked } = e.target;
-                                                                    const newSelectedElection = checked ? [...selectedElections, item?.election_id] : selectedElections.filter((election) => election !== item?.election_id);
-                                                                    setSelectedElections(newSelectedElection);
+                                                                    const newSelectedGroups = checked ? [...selectedGroups, item?.group_id] : selectedGroups.filter((group) => group !== item?.group_id);
+                                                                    setSelectedGroups(newSelectedGroups);
                                                                 }}
-                                                                checked={selectedElections?.includes(item?.election_id)}
+                                                                checked={selectedGroups?.includes(item?.group_id)}
                                                                 className='w-4 h-4 rounded-lg'
                                                                 type='checkbox'
                                                                 name='check'
@@ -136,16 +128,16 @@ const ViewElections = () => {
                                                         </td>
                                                         <td className='p-2'>
                                                             {
-                                                                editableElectionId === item?.election_id ? (
+                                                                editableGroupId === item?.group_id ? (
                                                                     <DebounceInput
                                                                         minLength={2}
                                                                         debounceTimeout={1000}
                                                                         onBlur={() => {
-                                                                            setEditableElectionId(null);
+                                                                            setEditableGroupId(null);
                                                                         }}
                                                                         onChange={(e) => {
                                                                             const { value } = e.target;
-                                                                            updateElection({election_id: item?.election_id, title: value});
+                                                                            updateElectionGroup({group_id: item?.group_id, title: value});
                                                                         }}
                                                                         className='
                                                                             bg-white shadow-md w-full
@@ -166,29 +158,44 @@ const ViewElections = () => {
                                                         <td className='p-2 text-left'>
                                                             <div>
                                                                 {
-                                                                    editableElectionId === item?.election_id ? (
+                                                                    editableGroupId === item?.group_id ? (
                                                                         <DebounceInput
                                                                             id="description"
                                                                             minLength={1}
-                                                                            className="
-                                                                                bg-white shadow-md w-full
-                                                                                border border-gray-300 p-2 rounded-md
-                                                                                focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
-                                                                            "
+                                                                            className="bg-white shadow-md w-full
+                                                                            border border-gray-300
+                                                                            p-3
+                                                                            rounded-md
+                                                                            focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
                                                                             debounceTimeout={1000}
                                                                             placeholder="Search"
                                                                             type={"textarea"}
                                                                             
                                                                             value={item?.description}
                                                                             onBlur={() => {
-                                                                                setEditableElectionId(null);
+                                                                                setEditableGroupId(null);
                                                                             }}
                                                                             onChange={(e) => {
-                                                                                const { value } = e.target;
-                                                                                updateElection({election_id: item?.election_id, description: value});
+                                                                                // console.log(e?.target?.value);
+                                                                                updateElectionGroup({group_id: item?.group_id, description: e?.target?.value});
                                                                             }}
                                                                         />
-                                                                        
+                                                                        // <input
+                                                                        //     onChange={(e) => {
+                                                                        //         const { value } = e.target;
+                                                                        //         setGroups(groups.map((group) => {
+                                                                        //             if(group?.group_id === item?.group_id) {
+                                                                        //                 return { ...group, description: value };
+                                                                        //             }
+                                                                        //             return group;
+                                                                        //         }));
+                                                                        //     }}
+                                                                        //     value={item?.description}
+                                                                        //     className='w-full h-8 rounded-lg border border-gray-300'
+                                                                        //     type='text'
+                                                                        //     name='description'
+                                                                        //     id='description'
+                                                                        // />
                                                                     ) : (
                                                                         item?.description
                                                                     )
@@ -198,24 +205,27 @@ const ViewElections = () => {
                                                         
                                                         <td className='p-2'>
                                                             {
-                                                                editableElectionId === item?.election_id 
+                                                                editableGroupId === item?.group_id 
                                                                 ? (
                                                                     <select
                                                                         className='bg-white shadow-md
                                                                             border border-gray-300
-                                                                            p-2
+                                                                            p-3
                                                                             rounded-md
                                                                             focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
                                                                         '
                                                                         value={item?.status}
-                                                                        onBlur={() => setEditableElectionId(null)}
+                                                                        onBlur={() => setEditableGroupId(null)}
                                                                         onChange={(e) => {
                                                                             const newStatus = e?.target?.value;
                                                                             console.log({newStatus});
                                                                             if(newStatus !== item?.status) {
-                                                                                updateElection({election_id: item?.election_id, status: newStatus});
+                                                                                updateElectionGroup({group_id: item?.group_id, status: newStatus});
                                                                             }
-                                                                            
+                                                                            // setGroups(newGroups);
+                                                                            // setTimeout(() => {
+                                                                            //     setEditableGroupId(null)
+                                                                            // }, 10000);
                                                                         }}
                                                                     >
                                                                         {
@@ -234,60 +244,19 @@ const ViewElections = () => {
                                                             
                                                         </td>
                                                         <td className='p-2'>
-                                                            {
-                                                                editableElectionId === item?.election_id
-                                                                ? (
-                                                                    <Select
-                                                                        isMulti
-                                                                        options={groups}
-                                                                        onBlur={() => setEditableElectionId(null)}
-                                                                        defaultValue={
-                                                                            item?.candidates?.map(candidate => {
-                                                                                return {
-                                                                                    value: candidate?.group_id,
-                                                                                    label: candidate?.group_name
-                                                                                }
-                                                                            })
-                                                                        }
-                                                                        onChange={(e) => {
-                                                                            const newCandidates = e?.map(item => item?.value);
-                                                                            console.log({newCandidates});
-                                                                            if(JSON.stringify(newCandidates) !== JSON.stringify(item?.candidates)) {
-                                                                                updateElection({election_id: item?.election_id, candidates: newCandidates});
-                                                                            }
-                                                                        }}
-                                                                    />
-                                                                ) : (
-                                                                    <span className="capitalize p-2">
-                                                                        {
-                                                                            item?.candidates?.length > 0 ? item?.candidates?.map((candidate, idx) => {
-                                                                                return (
-                                                                                    <span key={idx}>
-                                                                                        {
-                                                                                            candidate?.group_name + (idx !== item?.candidates?.length - 1 ? ', ' : '')
-                                                                                        }
-                                                                                    </span>
-                                                                                );
-                                                                            }) : "No candidates"
-
-
-                                                                        }
-                                                                    </span>
-                                                                )
-
-                                                            }
-                                                            {/* <Link className='underline hover:italic text-green-500' to={`/admin/view-election-elections?election=${item?.election_id}`}>
+                                                            <Link className='underline hover:italic text-green-500' to={`/admin/view-election-groups?group=${item?.group_id}`}>
                                                                 See Here
-                                                            </Link> */}
+                                                            </Link>
                                                         </td>
                                                         <td className='p-2'>
                                                             <button
                                                                 // disabled={completed ? true : false}
+                                                                // className={`${completed && "cursor-not-allowed"} focus:outline-none bg-purple-400 hover:bg-purple-800 text-white font-bold p-1 rounded-full inline-flex items-center`}
                                                                 className={`focus:outline-none bg-purple-400 hover:bg-purple-800 text-white font-bold p-1 rounded-full inline-flex items-center transition duration-300`}
                                                                 onClick={() => {
-                                                                    setEditableElectionId(item?.election_id);
+                                                                    setEditableGroupId(item?.group_id);
                                                                     // setTimeout(() => {
-                                                                    //     setEditableElectionId(null)
+                                                                    //     setEditableGroupId(null)
                                                                     // }, 10000);
                                                                 }}
                                                             >
@@ -318,4 +287,4 @@ const ViewElections = () => {
     );
 };
 
-export default ViewElections;
+export default ViewGroups;

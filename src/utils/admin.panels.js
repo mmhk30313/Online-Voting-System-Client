@@ -1,10 +1,10 @@
 export const admin_panels = [
+    {route: "add-election-group", title: "Add Election Group"},
+    {route: "view-election-groups", title: "View Election Groups"},
     {route: "add-election", title: "Add Election"}, 
     {route: "view-elections", title: "View Elections"}, 
     {route: "add-user", title: "Add User"}, 
     {route: "view-users", title: "View Users"}, 
-    // {route: "add-candidate", title: "Add Candidate"},
-    // {route: "view-candidates", title: "View Candidates"},
 ];
 
 

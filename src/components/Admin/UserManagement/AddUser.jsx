@@ -1,29 +1,33 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import { useLoginMutation, useRegisterMutation, useUserRegisterMutation } from '../../../features/auth/authApi';
+import Select from 'react-select';
+import { useGetActiveElectionGroupQuery, useGetActiveElectionsQuery } from '../../../features/api/apiSlice';
+import { useUserRegisterMutation } from '../../../features/auth/authApi';
 
 const options = [
     { value: '', label: 'Select an option' },
-    { value: 'admin', label: 'Admin' },
+    // { value: 'admin', label: 'Admin' },
     { value: 'user', label: 'User' },
     {value: 'candidate', label: 'Candidate'},
 ];
 
 const AddUser = () => {
-    const navigate = useNavigate();
     const [message, setMessage] = React.useState(null);
+    const [group_id, setGroupId] = React.useState(null);
+    const [election_id, setElectionId] = React.useState(null);
+    const [isCandidate, setIsCandidate] = React.useState(false);
+    const {data: activeElectionGroups} = useGetActiveElectionGroupQuery();
+    const {data: activeElections} = useGetActiveElectionsQuery();
     
     const [userRegister, {data: userData, isSuccess: isUserRegisterSuccess, error: userRegisterError }] = useUserRegisterMutation();
 
     useEffect(() => {
-        console.log({userRegisterError, isUserRegisterSuccess, userData});
+        // console.log({userRegisterError, isUserRegisterSuccess, userData});
         const our_message = userRegisterError?.data?.message
                 ? {color: "red", value: userRegisterError?.data?.message} 
                 : isUserRegisterSuccess 
                 ? {color: 'green', value: userData?.message}
                 :  null;
-        console.log({our_message});
+        // console.log({our_message});
         if(our_message) {
             console.log({our_message});
             setMessage(our_message);
@@ -46,14 +50,28 @@ const AddUser = () => {
             return;
         }
 
+        if(isCandidate){
+            if(!group_id || !election_id){
+                setMessage({color: "red", value: "Please select election group and election"});
+                setTimeout(() => {
+                    setMessage(null);
+                }, [10000])
+                return;
+            }
+        }
+
         const dataObj = {
             user_id: user_id?.value, 
             user_role: user_role?.value,
             email: email?.value,
             password: password?.value,
             confirm_password: confirm_password?.value,
-            user_name: user_name?.value
+            user_name: user_name?.value,
+            group_id: group_id,
         };
+
+        group_id && (dataObj.group_id = group_id);
+        election_id && (dataObj.election_id = election_id);
 
         console.log(dataObj);
         
@@ -61,7 +79,7 @@ const AddUser = () => {
 
     }
 
-
+    // console.log({activeElectionGroups, activeElections});
     return (
         <React.Fragment>
             <div className='w-full flex flex-col items-center justify-center'>
@@ -115,6 +133,10 @@ const AddUser = () => {
                             <select
                                 name='user_role'
                                 id='user_role'
+                                onChange={(e) => {
+                                    setIsCandidate(e?.target?.value === 'candidate');
+                                }}
+                                
                                 placeholder='Select user role'
                                 className='border border-gray-400 rounded p-2 text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ease-in-out duration-500'
                                 defaultValue={null}
@@ -125,6 +147,55 @@ const AddUser = () => {
                                 ))}
                             </select>
                         </div>
+
+                        {isCandidate && (
+                            <>
+                                <div className='flex flex-col gap-y-2'>
+                                    <label htmlFor='group_id' className='text-indigo-500 uppercase italic font-bold tracking-wide'>Election Group</label>
+                                    <Select
+                                        name='group_id'
+                                        id='group_id'
+                                        placeholder='Select election group'
+                                        className='border border-gray-400 rounded p-[1px] text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ease-in-out duration-500'
+                                        defaultValue={null}
+                                        required
+                                        options={
+                                            activeElectionGroups?.data?.map((group) => ({
+                                                value: group?.group_id,
+                                                label: group?.title
+                                            }))
+                                        }
+                                        onChange={(e) => {
+                                            setGroupId(e?.value);
+                                        }}
+                                        isClearable
+                                    />
+                                </div>
+                                
+                                <div className='flex flex-col gap-y-2'>
+                                    <label htmlFor='election_id' className='text-indigo-500 uppercase italic font-bold tracking-wide'>Election Group</label>
+                                    <Select
+                                        name='election_id'
+                                        id='election_id'
+                                        placeholder='Select election'
+                                        className='border border-gray-400 rounded p-[1px] text-gray-700 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ease-in-out duration-500'
+                                        defaultValue={null}
+                                        required
+                                        options={
+                                            activeElections?.data?.map((election) => ({
+                                                value: election?.election_id,
+                                                label: election?.title
+                                            }))
+                                        }
+                                        onChange={(e) => {
+                                            setElectionId(e?.value);
+                                        }}
+                                        isClearable
+                                    />
+                                </div>
+
+                            </>
+                        )}
 
                         <div className='flex flex-col gap-2'>
                             <label className='text-indigo-500 uppercase italic font-bold tracking-wide' htmlFor='email'>Email</label>

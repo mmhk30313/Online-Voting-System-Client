@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, Transition } from '@headlessui/react';
 import gravatarUrl from "gravatar-url";
 import { Fragment } from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useSelector} from "react-redux";
 import { useLogoutMutation } from "../../features/auth/authApi";
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -10,10 +10,10 @@ function classNames(...classes) {
 
 export default function Navbar() {
     const {user} = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
-    const [logout, {isLoading}] = useLogoutMutation();
-    const navigate = useNavigate();
-    console.log({user});
+    // const dispatch = useDispatch();
+    const [logout] = useLogoutMutation();
+    // const navigate = useNavigate();
+    // console.log({user});
     return (
         <div className="sticky top-0 left-0 text-center w-full header bg-violet-600 py-4 text-white font-bold text-lg shadow-lg">
             <div className="flex flex-cols justify-between items-center px-10">
@@ -50,7 +50,7 @@ export default function Navbar() {
                                 {({ active }) => (
                                 <a
                                     href="#"
-                                    className={classNames(active ? 'bg-gray-100' : '', 'uppercase tracking-widest italic text-purple-300 border-b block px-4 py-2 text-sm text-gray-700')}
+                                    className={classNames(active ? 'bg-gray-100' : '', 'uppercase tracking-widest italic text-purple-600 border-b block px-4 py-2 text-sm text-blue-700')}
                                 >
                                     Your Profile
                                 </a>
@@ -60,7 +60,7 @@ export default function Navbar() {
                                 {({ active }) => (
                                 <a
                                     href="#"
-                                    className={classNames(active ? 'bg-gray-100' : '', 'uppercase tracking-widest italic text-purple-300 border-b block px-4 py-2 text-sm text-gray-700')}
+                                    className={classNames(active ? 'bg-gray-100' : '', 'uppercase tracking-widest italic text-purple-600 border-b block px-4 py-2 text-sm text-blue-700')}
                                 >
                                     Settings
                                 </a>
@@ -74,7 +74,7 @@ export default function Navbar() {
                                         // navigate('/');
                                         logout();
                                     }}
-                                    className={classNames(active ? 'bg-gray-100' : '', 'uppercase tracking-widest italic text-purple-300 block px-4 py-2 text-sm text-gray-700 cursor-pointer')}
+                                    className={classNames(active ? 'bg-gray-100' : '', 'uppercase tracking-widest italic text-purple-600 block px-4 py-2 text-sm text-blue-700 cursor-pointer')}
                                 >
                                     Logout
                                 </span>

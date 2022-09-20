@@ -5,6 +5,8 @@ import ViewElections from './Election/ViewElections';
 import ViewUsers from './UserManagement/ViewUsers';
 import AddUser from './UserManagement/AddUser';
 import { admin_panels } from '../../utils/admin.panels';
+import ViewGroups from './ElectionGroup/ViewGroups';
+import AddGroup from './ElectionGroup/AddGroup';
 
 const AdminPanel = () => {
     const [panelState, setPanelState] = React.useState(null);
@@ -24,6 +26,10 @@ const AdminPanel = () => {
         panelContent = <AddElection />;
     }else if(panelState === "view-elections"){
         panelContent = <ViewElections />;
+    }else if(panelState === "view-election-groups"){
+        panelContent = <ViewGroups />;
+    }else if(panelState === "add-election-group"){
+        panelContent = <AddGroup />;
     }else if(panelState === "view-users"){
         panelContent = <ViewUsers />;
     }else{
@@ -55,7 +61,7 @@ const AdminPanel = () => {
             <div 
                 className='min-h-[60vh]'
             >
-                <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3'>
+                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
                     {
                         panels?.map(item => {
                             return (
@@ -68,7 +74,7 @@ const AdminPanel = () => {
                                             hover:bg-indigo-500 
                                             hover:text-white italic font-bold
                                             transition-all ease-in-out duration-500
-                                            lg:text-lg md:text-md sm:text-sm xs:text-xs
+                                            lg:text-md md:text-md sm:text-sm xs:text-xs
                                             text-[10px]
                                         `}
                                     >

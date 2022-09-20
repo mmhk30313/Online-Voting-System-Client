@@ -1,4 +1,18 @@
 ::-webkit-scrollbar {
   display: none;
   /* width: 5px; */
+  color: #0481fd;
+}
+
+.marquee {
+  animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }

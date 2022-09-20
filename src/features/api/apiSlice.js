@@ -14,9 +14,14 @@ export const apiSlice = createApi({
         },
         // credentials: "include",
     }),
-    tagTypes: ["users", "admins", "user", "AddedUser", "UpdatedUser", "DeletedUser"],
+    tagTypes: [
+        "users", "admins", "user", 
+        "elections", "activeElections", "election",
+        "electionGroups", "activeElectionGroups", "electionGroup",
+        "AddedUser", "UpdatedUser", "DeletedUser"
+    ],
     endpoints: (builder) => ({
-
+        // User endpoints
         getUsers: builder.query({
             query: () => "/users",
             // keepUnusedDataFor: 600,
@@ -33,46 +38,7 @@ export const apiSlice = createApi({
             query: (userEmail) => `/users/${userEmail}`,
             providesTags: (result, error, arg) => [{ type: "user", id: arg }],
         }),
-        // getTodosByCompletedStatus: builder.query({
-        //     query: (completed) => `/todos?completed=${completed}`,
-        //     providesTags: (result, error, arg) => [
-        //         { type: "CompletedTodos", id: arg.id },
-        //     ],
-        // }),
-        // getCompletedTodos: builder.query({
-        //     query: ({ completed }) => {
-        //         const queryString = `/todos?completed_like=${completed}`;
-        //         return queryString;
-        //     },
-        //     providesTags: (result, error, arg) => [
-        //         { type: "CompletedTodos", id: arg.id },
-        //     ],
-        // }),
 
-        getElections: builder.query({
-            query: () => "/user/election",
-            providesTags: ['elections']
-
-        }),
-
-        createElection: builder.mutation({
-            query: (newElection) => ({
-                url: "/user/election",
-                method: "POST",
-                body: newElection,
-            }),
-            invalidatesTags: ["admins", "users", "elections"],
-        }),
-        
-        updateElection: builder.mutation({
-            query: (election) => ({
-                url: "/user/election",
-                method: "PUT",
-                body: election,
-            }),
-            invalidatesTags: ["admins", "users", "elections"],
-        }),
-        
         addUser: builder.mutation({
             query: ({data}) => ({
                 url: "/users",
@@ -81,6 +47,7 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ["users"],
         }),
+
         editUser: builder.mutation({
             query: ({ email, data }) => ({
                 url: `/users/${email}`,
@@ -90,10 +57,11 @@ export const apiSlice = createApi({
             invalidatesTags: (result, error, arg) => [
                 "users",
                 "admins",
-                { type: "user", id: arg.email },
+                { type: "users", id: arg.email },
                 { type: "admins", id: arg.email },
             ],
         }),
+
         deleteUser: builder.mutation({
             query: (email) => ({
                 url: `/users/${email}`,
@@ -105,6 +73,51 @@ export const apiSlice = createApi({
                 { type: "admins", id: arg.email }
             ],
         }),
+
+        // Election endpoints
+        getElections: builder.query({
+            query: () => "/elections",
+            providesTags: ['elections']
+
+        }),
+
+        getActiveElections: builder.query({
+            query: () => "/elections/active",
+            providesTags: ['activeElections']
+        }),
+
+        // Group of elections endpoints
+        getElectionGroups: builder.query({
+            query: () => `/election/groups`,
+            providesTags: ['electionGroups'],
+            transformResponse(apiResponse, meta) {
+                const totalCount = meta.response.headers.get("X-Total-Count");
+                return {
+                    data: apiResponse?.data,
+                    status: apiResponse?.status,
+                    message: apiResponse?.message,
+                    totalCount: apiResponse?.data?.length || 0,
+                };
+            },
+        }),
+
+        getActiveElectionGroup: builder.query({
+            query: () => `/election-groups/active`,
+            providesTags: ['activeElectionGroups'],
+            transformResponse(apiResponse, meta) {
+                const totalCount = meta.response.headers.get("X-Total-Count");
+                return {
+                    data: apiResponse?.data,
+                    status: apiResponse?.status,
+                    message: apiResponse?.message,
+                    totalCount: totalCount || apiResponse?.data?.length || 0,
+                };
+            },
+
+        }),
+
+        
+        // Bulk mutation
         bulkUpdateStatus: builder.mutation({
             query: ({ emails, status }) => ({
                 url: `/users/bulk-update-status`,
@@ -118,6 +131,7 @@ export const apiSlice = createApi({
                 ...arg.emails?.map((email) => ({ type: "admins", email })),
             ],
         }),
+        
         bulkDeleteUsers: builder.mutation({
             query: (emails) => ({
                 url: `/users/bulk-delete`,
@@ -139,14 +153,18 @@ export const {
     useBulkDeleteUsersMutation,
     useBulkUpdateStatusMutation,
     // query hooks
+    // elections
     useGetElectionsQuery,
+    useGetActiveElectionsQuery,
+    // admins
     useGetAdminsQuery,
+    // users
     useGetUserQuery,
     useGetUsersQuery,
+    // groups
+    useGetElectionGroupsQuery,
+    useGetActiveElectionGroupQuery,
     // login-sign-up hooks
-    // useCreateAdminMutation,
-    useCreateElectionMutation,
-    useUpdateElectionMutation,
     useAddUserMutation,
     useEditUserMutation,
     useDeleteUserMutation
