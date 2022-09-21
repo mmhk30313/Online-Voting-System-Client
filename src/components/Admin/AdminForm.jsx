@@ -32,7 +32,7 @@ const AdminForm = () => {
         const {email, password, confirm_password, user_name } = e.target.elements;
         console.log({user_name: user_name?.value, email: email.value, password: password.value});
         if(loginFlag){
-            login({email: email.value, password: password.value});
+            login({user_role: 'admin', email: email.value, password: password.value});
         }else{
             // register
             register({user_name: user_name?.value, email: email.value, password: password.value, confirm_password: confirm_password?.value});

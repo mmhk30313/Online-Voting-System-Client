@@ -15,7 +15,7 @@ export default function Navbar() {
     // const navigate = useNavigate();
     // console.log({user});
     return (
-        <div className="sticky top-0 left-0 text-center w-full header bg-violet-600 py-4 text-white font-bold text-lg shadow-lg">
+        <div className="sticky z-40 top-0 left-0 text-center w-full header bg-violet-600 py-4 text-white font-bold text-lg shadow-lg">
             <div className="flex flex-cols justify-between items-center px-10">
                 <Link to={'/'}
                     className="bg-purple-400 hover:bg-blue-500 border border-white rounded-full p-2 duration-300
@@ -84,7 +84,12 @@ export default function Navbar() {
                         </Transition>
                         </Menu>
                     ) : (
-                        null
+                        <Link to={'/'}
+                            className="bg-purple-400 hover:bg-blue-500 border border-white rounded-full p-2 duration-300
+                            transition-all ease-in-out cursor-pointer"
+                        >
+                            Home
+                        </Link>
                     )
                 }
             </div>

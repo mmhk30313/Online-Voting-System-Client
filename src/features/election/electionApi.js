@@ -4,6 +4,46 @@ export const electionApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // Add an endpoint called `getElections` here:
 
+        // Vote for election and update election group by votes
+        voteForElection: builder.mutation({
+            query: (body) => ({
+                url: "/elections/vote",
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
+                { type: "activeElectionGroups", id: arg.group_id },
+                { type: "electionGroups", id: arg.group_id },
+            ],
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled;
+                    const { data, status, message } = result?.data;
+                    // console.log({ data, status, message });
+                    if (status) {
+                        console.log("====user_data====",{ data });
+                        apiSlice.util.updateQueryData(
+                            "getUser",
+                            data?.email,
+                            (draft) => {
+                                draft.data = data;
+                                return draft;
+                            }
+                        )
+
+                    } 
+                } catch (err) {
+                    // do nothing
+                    console.log({ err });
+                }
+            },
+        }),
+
+        // Group of Election
         createElectionGroup: builder.mutation({
             query: (body) => ({
                 url: `/election/create/group`,
@@ -11,6 +51,10 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
                 { type: "activeElectionGroups", id: arg.group_id },
                 { type: "electionGroups", id: arg.group_id },
             ],
@@ -28,6 +72,10 @@ export const electionApi = apiSlice.injectEndpoints({
                 }
             },
             invalidatesTags: (result, error, arg) => [
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
                 { type: "activeElectionGroups", id: arg.group_id },
                 { type: "electionGroups", id: arg.group_id },
             ],
@@ -47,8 +95,12 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "electionGroups", id: arg.group_id || arg.id },
-                { type: "activeElectionGroups", id: arg.group_id || arg.id },
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
+                { type: "activeElectionGroups", id: arg.group_id },
+                { type: "electionGroups", id: arg.group_id },
             ],
         }),
 
@@ -60,8 +112,12 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "elections", id: arg.group_id },
-                { type: "activeElections", id: arg.group_id },
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
+                { type: "activeElectionGroups", id: arg.group_id },
+                { type: "electionGroups", id: arg.group_id },
             ],
         }),
 
@@ -72,8 +128,12 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "elections", id: arg.group_id },
-                { type: "activeElections", id: arg.group_id },
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
+                { type: "activeElectionGroups", id: arg.group_id },
+                { type: "electionGroups", id: arg.group_id },
             ],
         }),
 
@@ -83,8 +143,12 @@ export const electionApi = apiSlice.injectEndpoints({
                 method: "DELETE",
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "elections", id: arg.group_id },
-                { type: "activeElections", id: arg.group_id },
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
+                { type: "activeElectionGroups", id: arg.group_id },
+                { type: "electionGroups", id: arg.group_id },
             ],
         }),
 
@@ -95,14 +159,20 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "elections", id: arg.group_id || arg.id },
-                { type: "activeElections", id: arg.group_id || arg.id },
+                { type: "users", id: arg.group_id },
+                { type: "user", id: arg.group_id },
+                { type: "elections", id: arg.election_id },
+                { type: "activeElections", id: arg.election_id },
+                { type: "activeElectionGroups", id: arg.group_id },
+                { type: "electionGroups", id: arg.group_id },
             ],
         }),
     }),
 });
 
 export const {
+    // Vote for election and update election group by votes
+    useVoteForElectionMutation,
     // Groups of election
     useCreateElectionGroupMutation,
     useUpdateElectionGroupMutation,

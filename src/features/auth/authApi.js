@@ -159,17 +159,20 @@ export const authApi = apiSlice.injectEndpoints({
                 method: "POST",
                 body: { refreshToken: data },
             }),
-
+                
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 try {
                     await queryFulfilled;
                     localStorage.removeItem("auth");
                     localStorage.removeItem("accessToken");
                     dispatch(userLoggedOut({ accessToken: "", user: {} }));
+                    // cache clear in rtk query
+                    dispatch(apiSlice.util.resetApiState());
+
                 } catch (err) {
                     // do nothing
                 }
-            }
+            },
         }),
 
     }),

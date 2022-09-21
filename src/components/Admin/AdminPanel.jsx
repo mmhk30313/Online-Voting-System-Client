@@ -7,6 +7,7 @@ import AddUser from './UserManagement/AddUser';
 import { admin_panels } from '../../utils/admin.panels';
 import ViewGroups from './ElectionGroup/ViewGroups';
 import AddGroup from './ElectionGroup/AddGroup';
+import ViewActiveElections from './ActiveElections/ViewActiveElections';
 
 const AdminPanel = () => {
     const [panelState, setPanelState] = React.useState(null);
@@ -32,6 +33,9 @@ const AdminPanel = () => {
         panelContent = <AddGroup />;
     }else if(panelState === "view-users"){
         panelContent = <ViewUsers />;
+    }else if(panelState === "active-elections"){
+        console.log("active elections");
+        panelContent = <ViewActiveElections />;
     }else{
         panelContent = <div className='lg:h-[45vh] flex flex-col items-center justify-center text-center text-2xl font-bold text-gray-700'
         >
@@ -46,13 +50,20 @@ const AdminPanel = () => {
                 Welcome to Admin Panel
             </h1>
             <h1 
-                className='uppercase text-indigo-500 italic p-3
+                className='
+                    uppercase text-indigo-500 italic p-3
                     text-2xl font-semibold 
                     text-purple-500
-                    animate-text duration-75
+                    animate-text duration-75 
+                    border border-purple-500 rounded-lg
+                    bg-gradient-to-r bg-clip-text  text-transparent
+                    from-red-500 via-purple-500 to-green-500
+                    my-5 hover:bg-purple-700 hover:text-white
                 '
             >
-            Select an option
+                <Link to='/admin/active-elections' className='text-blue-500 hover:text-blue-700 transition-all ease-in-out duration-300'>
+                    See Active Elections
+                </Link>
             </h1>
         </div> ;
     }

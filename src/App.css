@@ -4,8 +4,14 @@
   color: #0481fd;
 }
 
-.marquee {
-  animation: marquee 15s linear infinite;
+.marquee  {
+  animation: marquee 10s linear infinite;
+}
+
+.marquee2 {
+  animation: marquee2 10s linear infinite;
+  position: absolute;
+  top: 0;
 }
 
 @keyframes marquee {
@@ -15,4 +21,20 @@
   to {
     transform: translateX(-100%);
   }
+}
+
+@keyframes marquee2 {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+.special-text{
+  background: #38CF7E;
+  background: radial-gradient(circle farthest-corner at center center, #38CF7E 28%, #5EBFFF 50%, #CF1B51 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

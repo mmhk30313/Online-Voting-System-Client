@@ -35,8 +35,8 @@ export const apiSlice = createApi({
         }),
 
         getUser: builder.query({
-            query: (userEmail) => `/users/${userEmail}`,
-            providesTags: (result, error, arg) => [{ type: "user", id: arg }],
+            query: () => `/user/details`,
+            providesTags: ["user"],
         }),
 
         addUser: builder.mutation({
