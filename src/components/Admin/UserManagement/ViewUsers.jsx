@@ -10,7 +10,7 @@ const statusOptions = [
 
 const roles = [
     { value: '', label: 'Select an option' },
-    // { value: 'admin', label: 'Admin' },
+    { value: 'admin', label: 'Admin' },
     { value: 'user', label: 'User' },
     { value: 'candidate', label: 'Candidate' },
 ];
@@ -120,9 +120,12 @@ const ViewUsers = () => {
                                                                 value={item?.user_role}
                                                                 onBlur={() => setEditableUserId(null)}
                                                                 onChange={(e) => {
-                                                                    const {value} = e?.target?.value;
-                                                                    editUser({email: item?.email, data: {role: value}});
+                                                                    const {value} = e?.target;
+                                                                    if(value) {
+                                                                        editUser({email: item?.email, data: {user_role: value}});
+                                                                    }
                                                                 }}
+                                                                placeholder='Select an option'
                                                                 className='
                                                                     bg-white shadow-md
                                                                     border border-gray-300
@@ -161,6 +164,7 @@ const ViewUsers = () => {
                                                                     const {value} = e?.target;
                                                                     editUser({email: item?.email, data: {voting_status: value === 'true'}});
                                                                 }}
+                                                                placeholder='Select Status'
                                                             >
                                                                 {
                                                                     statusOptions?.map(option => {

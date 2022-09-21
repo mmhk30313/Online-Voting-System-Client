@@ -12,6 +12,7 @@ const statusOptions = [
 
 
 const ViewElections = () => {
+    const [isPageLoading, setIsPageLoading] = React.useState(true);
     const [editableElectionId, setEditableElectionId] = React.useState(null);
     const [selectedElections, setSelectedElections] = React.useState([]);
     const [elections, setElections] = React.useState([]);
@@ -26,6 +27,10 @@ const ViewElections = () => {
             setElections(our_elections);
             // setEditableElectionId(null);
             setSelectedElections([]);
+        }else{
+            setTimeout(() => {
+                setIsPageLoading(false);
+            }, 4000);
         }
 
         if(activeElectionGroups?.data?.length){
@@ -70,7 +75,7 @@ const ViewElections = () => {
 
                 <div className='grid grid-cols-1 gap-3 h-[45vh] overflow-auto'>
                         {
-                            (!elections?.length || isBulkLoading) ? (
+                            (!elections?.length || isBulkLoading) && isPageLoading ? (
                                 <div className='w-full'>
                                     <ViewListLoader/>
                                     <ViewListLoader/>
@@ -107,6 +112,18 @@ const ViewElections = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
+
+                                        {
+                                            !elections?.length && (
+                                                <tr>
+                                                    <td className='p-2 text-center text-3xl text-blue-600' colSpan={7}>
+                                                        <span className='uppercase bg-sky-100 border border-blue-400 py-5 px-36 rounded-lg'>
+                                                            No election found
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
 
                                         {
                                             elections?.map((item, idx) => {

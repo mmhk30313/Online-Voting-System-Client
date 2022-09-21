@@ -51,10 +51,6 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "users", id: arg.group_id },
-                { type: "user", id: arg.group_id },
-                { type: "elections", id: arg.election_id },
-                { type: "activeElections", id: arg.election_id },
                 { type: "activeElectionGroups", id: arg.group_id },
                 { type: "electionGroups", id: arg.group_id },
             ],
@@ -72,12 +68,8 @@ export const electionApi = apiSlice.injectEndpoints({
                 }
             },
             invalidatesTags: (result, error, arg) => [
-                { type: "users", id: arg.group_id },
-                { type: "user", id: arg.group_id },
-                { type: "elections", id: arg.election_id },
-                { type: "activeElections", id: arg.election_id },
-                { type: "activeElectionGroups", id: arg.group_id },
                 { type: "electionGroups", id: arg.group_id },
+                { type: "activeElectionGroups", id: arg.group_id },
             ],
         }),
 
@@ -95,10 +87,6 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "users", id: arg.group_id },
-                { type: "user", id: arg.group_id },
-                { type: "elections", id: arg.election_id },
-                { type: "activeElections", id: arg.election_id },
                 { type: "activeElectionGroups", id: arg.group_id },
                 { type: "electionGroups", id: arg.group_id },
             ],
@@ -112,28 +100,24 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "users", id: arg.group_id },
-                { type: "user", id: arg.group_id },
                 { type: "elections", id: arg.election_id },
                 { type: "activeElections", id: arg.election_id },
-                { type: "activeElectionGroups", id: arg.group_id },
-                { type: "electionGroups", id: arg.group_id },
             ],
         }),
 
         updateElection: builder.mutation({
-            query: (body) => ({
-                url: `/elections/update/${body.election_id}`,
-                method: "PUT",
-                body,
-            }),
+            query: (body) => {
+                const { election_id } = body;
+                delete body.election_id;
+                return {
+                    url: `/elections/update/${election_id}`,
+                    method: "PUT",
+                    body,
+                }
+            },
             invalidatesTags: (result, error, arg) => [
-                { type: "users", id: arg.group_id },
-                { type: "user", id: arg.group_id },
                 { type: "elections", id: arg.election_id },
-                { type: "activeElections", id: arg.election_id },
-                { type: "activeElectionGroups", id: arg.group_id },
-                { type: "electionGroups", id: arg.group_id },
+                { type: "activeElections", id: arg.election_id }
             ],
         }),
 
@@ -143,8 +127,6 @@ export const electionApi = apiSlice.injectEndpoints({
                 method: "DELETE",
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "users", id: arg.group_id },
-                { type: "user", id: arg.group_id },
                 { type: "elections", id: arg.election_id },
                 { type: "activeElections", id: arg.election_id },
                 { type: "activeElectionGroups", id: arg.group_id },
@@ -159,12 +141,8 @@ export const electionApi = apiSlice.injectEndpoints({
                 body,
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: "users", id: arg.group_id },
-                { type: "user", id: arg.group_id },
                 { type: "elections", id: arg.election_id },
-                { type: "activeElections", id: arg.election_id },
-                { type: "activeElectionGroups", id: arg.group_id },
-                { type: "electionGroups", id: arg.group_id },
+                { type: "activeElections", id: arg.election_id }
             ],
         }),
     }),
