@@ -161,12 +161,12 @@ export const authApi = apiSlice.injectEndpoints({
                     const {message} = err?.error?.data;
                     console.log({message});
                     dispatch(
+                        userLoggedOut()
+                    );
+                    dispatch(
                         authError( {
                             error: message,
                         })
-                    );
-                    dispatch(
-                        userLoggedOut()
                     );
                     dispatch(apiSlice.util.resetApiState());
                 }

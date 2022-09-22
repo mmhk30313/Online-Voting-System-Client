@@ -118,7 +118,7 @@ const ViewElections = () => {
                                                 <tr>
                                                     <td className='p-2 text-center lg:text-3xl text-lg text-blue-600' colSpan={7}>
                                                         <span className='uppercase bg-sky-100 border border-blue-400 py-5 lg:px:36 md:px-20 px-20 rounded-lg'>
-                                                            No election found
+                                                            No election is found
                                                         </span>
                                                     </td>
                                                 </tr>

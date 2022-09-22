@@ -37,7 +37,7 @@ const AdminPanel = () => {
         console.log("active elections");
         panelContent = <ViewActiveElections />;
     }else{
-        panelContent = <div className='lg:h-[45vh] flex flex-col items-center justify-center text-center text-2xl font-bold text-gray-700'
+        panelContent = <div className='lg:h-[45vh] flex flex-col gap-5 items-center justify-center text-center text-2xl font-bold text-gray-700'
         >
             <h1 
                 className='uppercase text-indigo-500 italic
@@ -49,22 +49,21 @@ const AdminPanel = () => {
             >
                 Welcome to Admin Panel
             </h1>
-            <h1 
+            <Link to='/admin/active-elections' 
                 className='
-                    uppercase text-indigo-500 italic p-3
+                    uppercase italic p-3 my-4
                     text-2xl font-semibold 
                     text-purple-500
-                    animate-text duration-75 
                     border border-purple-500 rounded-lg
-                    bg-gradient-to-r bg-clip-text  text-transparent
-                    from-red-500 via-purple-500 to-green-500
-                    my-5 hover:bg-purple-700 hover:text-white
+                    my-5 hover:bg-purple-400 hover:text-white
+                    transition-all ease-in-out duration-200
+                    animate-text
                 '
             >
-                <Link to='/admin/active-elections' className='text-blue-500 hover:text-blue-700 transition-all ease-in-out duration-300'>
+                <h1 className='transition-all ease-in-out duration-300'>
                     See Active Elections
-                </Link>
-            </h1>
+                </h1>
+            </Link>
         </div> ;
     }
     return (

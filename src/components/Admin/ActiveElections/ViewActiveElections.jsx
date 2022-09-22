@@ -93,164 +93,174 @@ const ViewActiveElections = () => {
                                     <tbody>
 
                                         {
-                                            elections?.map((item, idx) => {
-                                                return (
-                                                    <tr key={item?.election_id} className={`
-                                                            bg-gray-70 hover:bg-gray-100 
-                                                            ${selectedElections?.includes(item?.election_id) ? 'bg-gray-100' : ''}
-                                                            ${idx % 2 === 0 ? 'bg-gray-28' : 'bg-gray-50'}
-                                                            text-center border-b-[3px]
-                                                            ${((idx+1) !== elections?.length && "border-blue-400")} 
-                                                            transition-all ease-in-out duration-300`
-                                                        }
-                                                    >
-                                                        <td className='p-2 text-left'>
-                                                            {
-                                                                editableElectionId === item?.election_id ? (
-                                                                    <DebounceInput
-                                                                        minLength={2}
-                                                                        debounceTimeout={1000}
-                                                                        onBlur={() => {
-                                                                            setEditableElectionId(null);
-                                                                        }}
-                                                                        onChange={(e) => {
-                                                                            const { value } = e.target;
-                                                                            updateElection({election_id: item?.election_id, title: value});
-                                                                        }}
-                                                                        className='
-                                                                            bg-white shadow-md w-full
-                                                                            border border-gray-300 p-2 rounded-md
-                                                                            focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
-                                                                        '
-                                                                        type='text'
-                                                                        name='title'
-                                                                        id='title'
-                                                                        value={item?.title}
-                                                                    />
-                                                                ) : (
-                                                                    item?.title
-                                                                )
+                                            !elections?.length ? (
+                                                <tr>
+                                                    <td className='p-2 text-center lg:text-3xl text-sm text-blue-600' colSpan={7}>
+                                                        <span className='uppercase bg-sky-100 border border-blue-400 py-5 lg:px:36 md:px-20 px-20 rounded-lg'>
+                                                            No Active election is found
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                elections?.map((item, idx) => {
+                                                    return (
+                                                        <tr key={item?.election_id} className={`
+                                                                bg-gray-70 hover:bg-gray-100 
+                                                                ${selectedElections?.includes(item?.election_id) ? 'bg-gray-100' : ''}
+                                                                ${idx % 2 === 0 ? 'bg-gray-28' : 'bg-gray-50'}
+                                                                text-center border-b-[3px]
+                                                                ${((idx+1) !== elections?.length && "border-blue-400")} 
+                                                                transition-all ease-in-out duration-300`
                                                             }
-                                                        </td>
-                                                        <td className='p-2 text-left'>{item?.user_email}</td>
-                                                        <td className='p-2 text-left'>
-                                                            <div>
+                                                        >
+                                                            <td className='p-2 text-left'>
                                                                 {
                                                                     editableElectionId === item?.election_id ? (
                                                                         <DebounceInput
-                                                                            id="description"
-                                                                            minLength={1}
-                                                                            className="
-                                                                                bg-white shadow-md w-full
-                                                                                border border-gray-300 p-2 rounded-md
-                                                                                focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
-                                                                            "
+                                                                            minLength={2}
                                                                             debounceTimeout={1000}
-                                                                            placeholder="Search"
-                                                                            type={"textarea"}
-                                                                            
-                                                                            value={item?.description}
                                                                             onBlur={() => {
                                                                                 setEditableElectionId(null);
                                                                             }}
                                                                             onChange={(e) => {
                                                                                 const { value } = e.target;
-                                                                                updateElection({election_id: item?.election_id, description: value});
+                                                                                updateElection({election_id: item?.election_id, title: value});
                                                                             }}
+                                                                            className='
+                                                                                bg-white shadow-md w-full
+                                                                                border border-gray-300 p-2 rounded-md
+                                                                                focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
+                                                                            '
+                                                                            type='text'
+                                                                            name='title'
+                                                                            id='title'
+                                                                            value={item?.title}
                                                                         />
-                                                                        
                                                                     ) : (
-                                                                        item?.description
+                                                                        item?.title
                                                                     )
                                                                 }
-                                                            </div>
-                                                        </td>
-                                                        
-                                                        <td className='p-2'>
-                                                            {
-                                                                editableElectionId === item?.election_id 
-                                                                ? (
-                                                                    <select
-                                                                        className='bg-white shadow-md
-                                                                            border border-gray-300
-                                                                            p-2
-                                                                            rounded-md
-                                                                            focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
-                                                                        '
-                                                                        value={item?.status}
-                                                                        onBlur={() => setEditableElectionId(null)}
-                                                                        onChange={(e) => {
-                                                                            const newStatus = e?.target?.value;
-                                                                            console.log({newStatus});
-                                                                            if(newStatus !== item?.status) {
-                                                                                updateElection({election_id: item?.election_id, status: newStatus});
-                                                                            }
+                                                            </td>
+                                                            <td className='p-2 text-left'>{item?.user_email}</td>
+                                                            <td className='p-2 text-left'>
+                                                                <div>
+                                                                    {
+                                                                        editableElectionId === item?.election_id ? (
+                                                                            <DebounceInput
+                                                                                id="description"
+                                                                                minLength={1}
+                                                                                className="
+                                                                                    bg-white shadow-md w-full
+                                                                                    border border-gray-300 p-2 rounded-md
+                                                                                    focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
+                                                                                "
+                                                                                debounceTimeout={1000}
+                                                                                placeholder="Search"
+                                                                                type={"textarea"}
+                                                                                
+                                                                                value={item?.description}
+                                                                                onBlur={() => {
+                                                                                    setEditableElectionId(null);
+                                                                                }}
+                                                                                onChange={(e) => {
+                                                                                    const { value } = e.target;
+                                                                                    updateElection({election_id: item?.election_id, description: value});
+                                                                                }}
+                                                                            />
                                                                             
-                                                                        }}
-                                                                    >
-                                                                        {
-                                                                            statusOptions?.map(option => {
-                                                                                return (
-                                                                                    <option key={option.value} value={option.value} className="capitalize">{option.label}</option>
-                                                                                );
-                                                                            })
-                                                                        }
-                                                                    </select>
-                                                                )
-                                                                : (
-                                                                    <span className="capitalize p-2">{item?.status}</span>
-                                                                )
-                                                            }
+                                                                        ) : (
+                                                                            item?.description
+                                                                        )
+                                                                    }
+                                                                </div>
+                                                            </td>
                                                             
-                                                        </td>
-                                                        <td className='p-2'>
-                                                            {
-                                                                editableElectionId === item?.election_id
-                                                                ? (
-                                                                    <Select
-                                                                        isMulti
-                                                                        options={groups}
-                                                                        onBlur={() => setEditableElectionId(null)}
-                                                                        defaultValue={
-                                                                            item?.candidates?.map(candidate => {
-                                                                                return {
-                                                                                    value: candidate?.group_id,
-                                                                                    label: candidate?.group_name
+                                                            <td className='p-2'>
+                                                                {
+                                                                    editableElectionId === item?.election_id 
+                                                                    ? (
+                                                                        <select
+                                                                            className='bg-white shadow-md
+                                                                                border border-gray-300
+                                                                                p-2
+                                                                                rounded-md
+                                                                                focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent
+                                                                            '
+                                                                            value={item?.status}
+                                                                            onBlur={() => setEditableElectionId(null)}
+                                                                            onChange={(e) => {
+                                                                                const newStatus = e?.target?.value;
+                                                                                console.log({newStatus});
+                                                                                if(newStatus !== item?.status) {
+                                                                                    updateElection({election_id: item?.election_id, status: newStatus});
                                                                                 }
-                                                                            })
-                                                                        }
-                                                                        onChange={(e) => {
-                                                                            const newCandidates = e?.map(item => item?.value);
-                                                                            console.log({newCandidates});
-                                                                            if(JSON.stringify(newCandidates) !== JSON.stringify(item?.candidates)) {
-                                                                                updateElection({election_id: item?.election_id, candidates: newCandidates});
+                                                                                
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                statusOptions?.map(option => {
+                                                                                    return (
+                                                                                        <option key={option.value} value={option.value} className="capitalize">{option.label}</option>
+                                                                                    );
+                                                                                })
                                                                             }
-                                                                        }}
-                                                                    />
-                                                                ) : (
-                                                                    <span className="capitalize p-2 text-left">
-                                                                        {
-                                                                            item?.candidates?.length > 0 ? item?.candidates?.map((candidate, idx) => {
-                                                                                return (
-                                                                                    <span className='block flex flex-row gap-x-2 p-2 justify-between my-2 border border-blue-700 rounded' key={idx}>
-                                                                                        <span className='font-bold text-3xl text-blue-700'>{candidate?.group_name}</span>
-                                                                                        <span className='font-bold text-3xl text-blue-700'>-</span>
-                                                                                        <span className='font-bold text-3xl text-blue-700'>{candidate?.votes}</span>
-                                                                                    </span>
-                                                                                );
-                                                                            }) : "No candidates"
+                                                                        </select>
+                                                                    )
+                                                                    : (
+                                                                        <span className="capitalize p-2">{item?.status}</span>
+                                                                    )
+                                                                }
+                                                                
+                                                            </td>
+                                                            <td className='p-2'>
+                                                                {
+                                                                    editableElectionId === item?.election_id
+                                                                    ? (
+                                                                        <Select
+                                                                            isMulti
+                                                                            options={groups}
+                                                                            onBlur={() => setEditableElectionId(null)}
+                                                                            defaultValue={
+                                                                                item?.candidates?.map(candidate => {
+                                                                                    return {
+                                                                                        value: candidate?.group_id,
+                                                                                        label: candidate?.group_name
+                                                                                    }
+                                                                                })
+                                                                            }
+                                                                            onChange={(e) => {
+                                                                                const newCandidates = e?.map(item => item?.value);
+                                                                                console.log({newCandidates});
+                                                                                if(JSON.stringify(newCandidates) !== JSON.stringify(item?.candidates)) {
+                                                                                    updateElection({election_id: item?.election_id, candidates: newCandidates});
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    ) : (
+                                                                        <span className="capitalize p-2 text-left">
+                                                                            {
+                                                                                item?.candidates?.length > 0 ? item?.candidates?.map((candidate, idx) => {
+                                                                                    return (
+                                                                                        <span className='block flex flex-row gap-x-2 p-2 justify-between my-2 border border-blue-700 rounded' key={idx}>
+                                                                                            <span className='font-bold text-3xl text-blue-700'>{candidate?.group_name}</span>
+                                                                                            <span className='font-bold text-3xl text-blue-700'>-</span>
+                                                                                            <span className='font-bold text-3xl text-blue-700'>{candidate?.votes}</span>
+                                                                                        </span>
+                                                                                    );
+                                                                                }) : "No candidates"
 
 
-                                                                        }
-                                                                    </span>
-                                                                )
+                                                                            }
+                                                                        </span>
+                                                                    )
 
-                                                            }
-                                                        </td>
+                                                                }
+                                                            </td>
 
-                                                    </tr>
-                                                )
-                                            })
+                                                        </tr>
+                                                    )
+                                                })
+                                            )
                                         }
                                     </tbody>
                                 </table>

@@ -23,8 +23,8 @@ const AdminForm = () => {
             setMessage(null)
             navigate('/admin');
         }
+        console.log({ err, loginData, registerData, message});
         if(err?.error && !isLoadingLogin && !isLoadingRegister){
-            console.log({loginData, registerData, message});
             
             console.log({message: err?.error});
             setMessage({color: 'red', value: err?.error});

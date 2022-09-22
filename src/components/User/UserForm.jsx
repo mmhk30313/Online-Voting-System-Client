@@ -10,7 +10,7 @@ const UserForm = () => {
     const [login, {data: loginData, isLoading, isSuccess: isLoginSuccess }] = useLoginMutation();
 
     useEffect(() => {
-        // console.log({isLoginSuccess, loginData});
+        console.log({isLoginSuccess, loginData});
         if(isLoading){
             setMessage({color: 'yellow', value: 'Login processing...'});
             setTimeout(() => {
@@ -22,6 +22,7 @@ const UserForm = () => {
             navigate('/user');
         }
         if(err?.error && !isLoading){
+            console.log({loginData, err});
             setMessage({value: err?.error, color: 'red'});
             setTimeout(() => {
                 setMessage(null);
