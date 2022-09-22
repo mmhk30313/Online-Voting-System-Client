@@ -15,7 +15,7 @@ const ViewGroups = () => {
     const [editableGroupId, setEditableGroupId] = React.useState(null);
     const [selectedGroups, setSelectedGroups] = React.useState([]);
     const [groups, setGroups] = React.useState([]);
-    const {data: electionGroups} = useGetElectionGroupsQuery();
+    const {data: electionGroups, isLoading: isElectionGroupLoading} = useGetElectionGroupsQuery();
     const [bulkUpdateElectionGroups, {isLoading: isBulkLoading, isSuccess, isError }] = useBulkUpdateElectionGroupsMutation();
     const [updateElectionGroup, { isSuccess: isUpdateSuccess, isError: isUpdateError }] = useUpdateElectionGroupMutation();
     useEffect(() => {
@@ -62,7 +62,7 @@ const ViewGroups = () => {
 
                 <div className='grid grid-cols-1 gap-3 h-[45vh] overflow-auto'>
                         {
-                            (!groups?.length || isBulkLoading) ? (
+                            ((!groups?.length && isElectionGroupLoading) || isBulkLoading ) ? (
                                 <div className='w-full'>
                                     <ViewListLoader/>
                                     <ViewListLoader/>

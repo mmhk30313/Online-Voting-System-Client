@@ -12,13 +12,13 @@ const statusOptions = [
 
 
 const ViewElections = () => {
-    const [isPageLoading, setIsPageLoading] = React.useState(true);
+    // const [isPageLoading, setIsPageLoading] = React.useState(true);
     const [editableElectionId, setEditableElectionId] = React.useState(null);
     const [selectedElections, setSelectedElections] = React.useState([]);
     const [elections, setElections] = React.useState([]);
     const {data: activeElectionGroups} = useGetActiveElectionGroupQuery();
     const [groups, setGroups] = React.useState([]);
-    const {data: electionData} = useGetElectionsQuery();
+    const {data: electionData,isLoading: isPageLoading} = useGetElectionsQuery();
     const [updateElection, {isError: isUpdateError}] = useUpdateElectionMutation();
     const [bulkUpdateElections, {isLoading: isBulkLoading, isSuccess, isError }] = useBulkUpdateElectionsMutation();
     useEffect(() => {
@@ -27,11 +27,12 @@ const ViewElections = () => {
             setElections(our_elections);
             // setEditableElectionId(null);
             setSelectedElections([]);
-        }else{
-            setTimeout(() => {
-                setIsPageLoading(false);
-            }, 4000);
         }
+        // else{
+        //     setTimeout(() => {
+        //         setIsPageLoading(false);
+        //     }, 4000);
+        // }
 
         if(activeElectionGroups?.data?.length){
             const our_groups = activeElectionGroups?.data?.map((group) => {
@@ -75,7 +76,7 @@ const ViewElections = () => {
 
                 <div className='grid grid-cols-1 gap-3 h-[45vh] overflow-auto'>
                         {
-                            (!elections?.length || isBulkLoading) && isPageLoading ? (
+                            (!elections?.length && isPageLoading) || isBulkLoading ? (
                                 <div className='w-full'>
                                     <ViewListLoader/>
                                     <ViewListLoader/>
