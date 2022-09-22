@@ -1,14 +1,20 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import AdminLogin from "./components/Home/AdminLogin";
-import Home from "./components/Home/Home";
-import UserLogin from "./components/Home/UserLogin";
 import useAuthCheck from "./hooks/useAuthCheck";
+// auth hook
 import Layout from './components/Layouts/Layout';
+
+// route guard
 import PublicRoute from "./components/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute";
-import AdminPanel from "./components/Admin/AdminPanel";
+
+// pages
+import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/Admin/AdminLogin";
+import UserLogin from "./pages/User/UserLogin";
+import User from "./pages/User/User";
+import Admin from "./pages/Admin/Admin";
+import Home from "./pages/Home";
 import './App.css';
-import UserPanel from "./components/User/UserPanel";
 
 function App() {
   const authChecked = useAuthCheck();
@@ -31,7 +37,7 @@ function App() {
           <Route path="/admin" 
             element={
               <PrivateRoute path="admin-login">
-                <AdminPanel/>
+                <Admin/>
               </PrivateRoute>
             } 
           />
@@ -39,7 +45,7 @@ function App() {
           <Route path="/admin/:panel" 
             element={
               <PrivateRoute path="admin-login">
-                <AdminPanel/>
+                <Admin/>
               </PrivateRoute>
             } 
           />
@@ -53,7 +59,7 @@ function App() {
 
           <Route path="/user" element={
               <PrivateRoute path={"user-login"}>
-                <UserPanel/>
+                <User/>
               </PrivateRoute>
             } 
           />
@@ -63,7 +69,7 @@ function App() {
               </PublicRoute>
             } 
           />
-          <Route path="*" element={<h1>404 Not Found</h1>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
     </Router>

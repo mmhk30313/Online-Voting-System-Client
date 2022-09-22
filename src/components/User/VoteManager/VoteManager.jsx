@@ -11,7 +11,7 @@ const VoteManager = ({election, candidates}) => {
     const user = user_data?.data;
     const [voteInfo, setVoteInfo] = React.useState(null);
     useEffect(() => {
-        console.log({updated_voter: voter_data});
+        // console.log({updated_voter: voter_data});
         if(voter_data || user){
             const data = voter_data?.data || user;
             setVoter(data);

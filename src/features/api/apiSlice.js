@@ -4,7 +4,10 @@ import { live_server } from "../../utils/server.config";
 export const apiSlice = createApi({
     // reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        baseUrl: live_server || "http://localhost:8000/api",
+        baseUrl: process.env.REACT_APP_LIVE_URL 
+                 || process.env.REACT_APP_LOCAL_URL 
+                 || live_server,
+        // baseUrl: live_server || "http://localhost:8000/api",
         prepareHeaders: (headers, { getState }) => {
             const accessToken = localStorage.getItem("accessToken");
             if (accessToken) {

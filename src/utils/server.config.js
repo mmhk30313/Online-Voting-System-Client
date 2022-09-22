@@ -1,1 +1,1 @@
-export const live_server = "http://localhost:8000/api";
+export const live_server = "https://bd-online-voting.herokuapp.com/api";

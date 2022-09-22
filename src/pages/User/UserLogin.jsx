@@ -1,5 +1,5 @@
 import React from 'react';
-import UserForm from '../User/UserForm';
+import UserForm from '../../components/User/UserForm';
 
 const UserLogin = () => {
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { useLoginMutation, useRegisterMutation } from '../../features/auth/authApi';
-import { useDispatch, useSelector } from "react-redux";
+import { useLoginMutation } from '../../features/auth/authApi';
+import { useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
 const UserForm = () => {
@@ -10,21 +10,22 @@ const UserForm = () => {
     const [login, {data: loginData, isLoading, isSuccess: isLoginSuccess }] = useLoginMutation();
 
     useEffect(() => {
-        console.log({isLoginSuccess, loginData});
+        // console.log({isLoginSuccess, loginData});
         if(isLoading){
-            setMessage({color: 'yellow', value: 'Loading...'});
+            setMessage({color: 'yellow', value: 'Login processing...'});
             setTimeout(() => {
                 setMessage(null);
             }, [10000]);
         }
         if (isLoginSuccess) {
+            setMessage(null);
             navigate('/user');
         }
-        if(err?.error){
+        if(err?.error && !isLoading){
             setMessage({value: err?.error, color: 'red'});
             setTimeout(() => {
                 setMessage(null);
-            }, 10000)
+            }, 20000)
         }
     },[err, isLoginSuccess, isLoading, loginData]);
 
@@ -49,7 +50,9 @@ const UserForm = () => {
 
                 >
                     <h1 className="text-2xl font-bold text-gray-700 uppercase">User Login</h1>
-                    <form className='w-full flex flex-col gap-y-5' id='admin_form' onSubmit={handleSubmit}
+                    <form className='w-full flex flex-col gap-y-5' 
+                        id='user_form' 
+                        onSubmit={handleSubmit}
                         autoComplete='off'
                         autoCorrect='on'
                     >
@@ -75,8 +78,16 @@ const UserForm = () => {
                             />
                         </div>
                         <div className='flex flex-col gap-2'>
-                            <button className='uppercase italic p-2 border border-blue-500 rounded bg-indigo-500 hover:bg-purple-400 text-white hover:text-gray-100 transition-all ease-in-out duration-300'>
-                                Login User
+                            <button 
+                                type='submit'
+                                disabled={isLoading}
+                                className={`uppercase italic p-2 border border-blue-500 font-bold
+                                    ${isLoading ? 'bg-blue-500 text-white cursor-not-allowed' : 'bg-sky-200 text-blue-700'}
+                                    rounded-lg hover:bg-purple-400 text-white 
+                                    hover:text-gray-100 transition-all ease-in-out duration-300`
+                                }
+                            >
+                                Login
                             </button>
                         </div>
                         {

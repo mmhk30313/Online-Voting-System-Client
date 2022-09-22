@@ -7,24 +7,32 @@ const AdminForm = () => {
     const navigate = useNavigate();
     const { error: err } = useSelector(state => state.auth);
     const [loginFlag, setLoginFlag] = React.useState(true);
-    const [message, setMessage] = React.useState('');
-    const [login, {data: loginData, isSuccess: isLoginSuccess, error: loginError }] = useLoginMutation();
-    const [register, { isSuccess: isResisterSuccess, error: registerError }] = useRegisterMutation();
+    const [message, setMessage] = React.useState(null);
+    const [login, {dada: loginData, isLoading: isLoadingLogin, isSuccess: isLoginSuccess }] = useLoginMutation();
+    const [register, {data: registerData, isLoading: isLoadingRegister, isSuccess: isResisterSuccess }] = useRegisterMutation();
 
-    console.log({isLoginSuccess, isResisterSuccess, err});
     useEffect(() => {
+        if(isLoadingLogin || isLoadingRegister){
+            setMessage({color: 'yellow', value: `${loginFlag ? "Login" : "Register"} processing...`});
+            // setTimeout(() => {
+            //     setMessage(null);
+            // }, [10000]);
+        }
+        
         if (isResisterSuccess || isLoginSuccess) {
+            setMessage(null)
             navigate('/admin');
         }
-        console.log({message: err?.error});
-        if(err?.error){
-            console.log(err.error);
-            setMessage(err?.error);
+        if(err?.error && !isLoadingLogin && !isLoadingRegister){
+            console.log({loginData, registerData, message});
+            
+            console.log({message: err?.error});
+            setMessage({color: 'red', value: err?.error});
             setTimeout(() => {
-                setMessage("");
-            }, [10000])
+                setMessage(null);
+            }, [20000])
         }
-    },[isResisterSuccess, isLoginSuccess, err]);
+    },[loginData, registerData, isLoadingLogin, isLoadingRegister, isResisterSuccess, isLoginSuccess, err]);
 
 
     const handleSubmit = (e) => {
@@ -122,11 +130,11 @@ const AdminForm = () => {
                             </button>
                         </div>
                         {
-                            message 
-                            ? <p className='bg-red-200 rounded-lg p-3 text-center text-red-700 font-bold text-lg'>
-                                {message}
+                            !message 
+                            ? null
+                            : <p className={`bg-${message?.color}-200 rounded-lg p-3 text-center text-${message?.color}-700 font-bold text-lg`}>
+                                {message?.value}
                             </p>
-                            : null
                         }
                     </form>
                     {

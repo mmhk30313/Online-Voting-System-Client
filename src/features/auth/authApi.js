@@ -102,6 +102,29 @@ export const authApi = apiSlice.injectEndpoints({
                 method: "POST",
                 body: data,
             }),
+            // transformResponse: (response) => {
+            //     console.log({ response });
+            //     const { data, status, message } = response;
+            //     if(status){
+            //         const { user, accessToken } = data;
+            //         if (user && accessToken) {
+            //             localStorage.setItem(
+            //                 "auth",
+            //                 JSON.stringify(user)
+            //             );
+            //             localStorage.setItem(
+            //                 "accessToken",
+            //                 JSON.stringify(accessToken)
+            //             );
+    
+            //             return {
+            //                 data: user,
+            //                 accessToken,
+            //             };
+            //         }
+            //     }
+            //     return response;
+            // },
 
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 
@@ -131,13 +154,6 @@ export const authApi = apiSlice.injectEndpoints({
                             );
                         }
                     }
-                    else{
-                        dispatch(
-                            authError( {
-                                error: message,
-                            })
-                        )
-                    }
 
                 } catch (err) {
                     // do nothing
@@ -148,7 +164,11 @@ export const authApi = apiSlice.injectEndpoints({
                         authError( {
                             error: message,
                         })
-                    )
+                    );
+                    dispatch(
+                        userLoggedOut()
+                    );
+                    dispatch(apiSlice.util.resetApiState());
                 }
             },
         }),
@@ -165,12 +185,23 @@ export const authApi = apiSlice.injectEndpoints({
                     await queryFulfilled;
                     localStorage.removeItem("auth");
                     localStorage.removeItem("accessToken");
-                    dispatch(userLoggedOut({ accessToken: "", user: {} }));
+                    dispatch(
+                        userLoggedOut()
+                    );
                     // cache clear in rtk query
                     dispatch(apiSlice.util.resetApiState());
-
+                    
                 } catch (err) {
                     // do nothing
+                    // This for local and server token issue for logout
+                    localStorage.removeItem("auth");
+                    dispatch(userLoggedOut({ accessToken: "", user: {} }));
+                    localStorage.removeItem("accessToken");
+                    dispatch(
+                        userLoggedOut()
+                    );
+                    // cache clear in rtk query
+                    dispatch(apiSlice.util.resetApiState());
                 }
             },
         }),
