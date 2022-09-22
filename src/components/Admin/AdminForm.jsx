@@ -60,7 +60,7 @@ const AdminForm = () => {
                     "
 
                 >
-                    <h1 className="text-xl font-bold text-gray-700 uppercase">Admin Login</h1>
+                    <h1 className="text-xl font-bold text-gray-700 uppercase">Admin {loginFlag ? "Login" : "Register"}</h1>
                     <form className='w-full flex flex-col gap-y-3' id='admin_form' onSubmit={handleSubmit}
                         autoComplete='off'
                         autoCorrect='on'
