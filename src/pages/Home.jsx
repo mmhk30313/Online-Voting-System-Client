@@ -10,7 +10,7 @@ const Home = () => {
         if(user?.user_role?.toLowerCase() === 'admin'){
             navigate('/admin');
         }
-        if(user?.user_role?.toLowerCase() === 'user'){
+        if(user?.user_role?.toLowerCase() === 'user' || user?.user_role?.toLowerCase() === 'candidate'){
             navigate('/user');
         }
     },[user]);

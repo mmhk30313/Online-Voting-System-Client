@@ -62,9 +62,9 @@ const ViewUsers = () => {
                                             </td>
                                         </tr>
                                     ) : (
-                                        users?.map((item) => {
+                                        users?.map((item, idx) => {
                                             return (
-                                                <tr key={item?.user_id} className='bg-gray-100 text-center border-b'>
+                                                <tr key={idx} className='bg-gray-100 text-center border-b'>
                                                     <td className='p-2 text-left'>
                                                         {
                                                             editableUserId === item?.user_id

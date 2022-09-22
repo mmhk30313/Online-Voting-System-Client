@@ -43,7 +43,7 @@ const AdminForm = () => {
             login({user_role: 'admin', email: email.value, password: password.value});
         }else{
             // register
-            register({user_name: user_name?.value, email: email.value, password: password.value, confirm_password: confirm_password?.value});
+            register({user_name: user_name?.value, user_role: 'admin', email: email.value, password: password.value, confirm_password: confirm_password?.value});
         }
 
     }
