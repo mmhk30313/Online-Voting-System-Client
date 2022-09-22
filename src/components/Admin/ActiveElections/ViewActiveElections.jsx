@@ -15,7 +15,7 @@ const ViewActiveElections = () => {
     const [editableElectionId, setEditableElectionId] = React.useState(null);
     const [selectedElections, setSelectedElections] = React.useState([]);
     const [elections, setElections] = React.useState([]);
-    const {data: activeElectionGroups} = useGetActiveElectionGroupQuery();
+    const {data: activeElectionGroups, isLoading: isPageLoading} = useGetActiveElectionGroupQuery();
     const [groups, setGroups] = React.useState([]);
     const {data: electionData} = useGetActiveElectionsQuery();
     const [updateElection, {isError: isUpdateError}] = useUpdateElectionMutation();
@@ -70,7 +70,7 @@ const ViewActiveElections = () => {
 
                 <div className='grid grid-cols-1 gap-3 h-[45vh] overflow-auto'>
                         {
-                            (!elections?.length || isBulkLoading) ? (
+                            (!elections?.length || isBulkLoading) && isPageLoading ? (
                                 <div className='w-full'>
                                     <ViewListLoader/>
                                     <ViewListLoader/>
