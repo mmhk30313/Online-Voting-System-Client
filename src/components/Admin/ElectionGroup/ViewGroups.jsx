@@ -101,7 +101,7 @@ const ViewGroups = () => {
                                     <tbody>
 
                                         {
-                                            groups?.length ? (
+                                            !groups?.length ? (
                                                 <tr>
                                                     <td className='p-2 text-center lg:text-3xl text-sm text-blue-600' colSpan={7}>
                                                         <span className='uppercase bg-sky-100 border border-blue-400 py-5 lg:px:36 md:px-20 px-20 rounded-lg'>
