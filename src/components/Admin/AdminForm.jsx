@@ -43,17 +43,17 @@ const AdminForm = () => {
 
     return (
         <React.Fragment>
-            <div className='h-[71vh] flex flex-col items-center justify-center'>
+            <div className='min-h-[70vh] flex flex-col items-center justify-center'>
                 <div 
                     className="
-                        w-[500px] mx-auto px-10 py-6 rounded-lg shadow-lg
-                        bg-gray-100 shadow-red-500 md:shadow-xl 
+                        w-full lg:w-[50%] mx-auto px-10 py-5 rounded-lg shadow-2xl
+                        bg-gray-100 shadow-gray-300 
                         flex flex-col gap-y-4 justify-center items-center
                     "
 
                 >
-                    <h1 className="text-2xl font-bold text-gray-700 uppercase">Admin Login</h1>
-                    <form className='w-full flex flex-col gap-y-5' id='admin_form' onSubmit={handleSubmit}
+                    <h1 className="text-xl font-bold text-gray-700 uppercase">Admin Login</h1>
+                    <form className='w-full flex flex-col gap-y-3' id='admin_form' onSubmit={handleSubmit}
                         autoComplete='off'
                         autoCorrect='on'
                     >
@@ -123,7 +123,9 @@ const AdminForm = () => {
                         </div>
                         {
                             message 
-                            ? <p className='text-center text-red-500'>{message}</p>
+                            ? <p className='bg-red-200 rounded-lg p-3 text-center text-red-700 font-bold text-lg'>
+                                {message}
+                            </p>
                             : null
                         }
                     </form>

@@ -56,11 +56,11 @@ const VoteManager = ({election, candidates}) => {
 
                 <div 
                     className={`
-                        bg-sky-100 p-5 rounded-lg
+                        bg-sky-100 px-5 py-2 rounded-lg
                         grid lg:grid-cols-2 md:grid-cols-2 xs:grid-cols-1
                     `}
                 >
-                    <div className='w-full flex bg-gray-100 rounded-lg p-5 flex-col gap-y-4 border-t-[10px] sm:border-r-[10px]'>
+                    <div className='w-full flex bg-gray-100 rounded-lg px-5 py-2 flex-col gap-y-4 border-t-[10px] sm:border-r-[10px]'>
                         <h1 className='text-left text-2xl font-bold italic'>User Information</h1>
                         <hr className='w-full border-gray-400' />
                         <h1 className='text-xl border-b border-blue-400 pb-2'>Name: {voter?.user_name}</h1>

@@ -5,22 +5,28 @@ import { useNavigate } from 'react-router-dom';
 
 const UserForm = () => {
     const navigate = useNavigate();
-    const [message, setMessage] = React.useState("");
+    const [message, setMessage] = React.useState(null);
     const {error: err} = useSelector(state => state.auth);
-    const [login, { isSuccess: isLoginSuccess, error: isLoginError }] = useLoginMutation();
+    const [login, {data: loginData, isLoading, isSuccess: isLoginSuccess }] = useLoginMutation();
 
     useEffect(() => {
-        console.log({isLoginSuccess, err});
+        console.log({isLoginSuccess, loginData});
+        if(isLoading){
+            setMessage({color: 'yellow', value: 'Loading...'});
+            setTimeout(() => {
+                setMessage(null);
+            }, [10000]);
+        }
         if (isLoginSuccess) {
             navigate('/user');
         }
         if(err?.error){
-            setMessage(err?.error);
+            setMessage({value: err?.error, color: 'red'});
             setTimeout(() => {
-                setMessage("");
+                setMessage(null);
             }, 10000)
         }
-    },[err, isLoginSuccess]);
+    },[err, isLoginSuccess, isLoading, loginData]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -36,9 +42,9 @@ const UserForm = () => {
             <div className='h-[70vh] flex flex-col items-center justify-center'>
                 <div 
                     className="
-                        w-[500px] mx-auto p-10 rounded-lg shadow-lg
-                        bg-gray-100 shadow-red-500 md:shadow-xl 
-                        flex flex-col gap-y-5 justify-center items-center
+                        w-full lg:w-[50%] mx-auto p-10 rounded-lg shadow-2xl
+                        bg-gray-100 shadow-gray-300
+                        flex flex-col gap-y-5 justify-center items-center my-3
                     "
 
                 >
@@ -70,13 +76,15 @@ const UserForm = () => {
                         </div>
                         <div className='flex flex-col gap-2'>
                             <button className='uppercase italic p-2 border border-blue-500 rounded bg-indigo-500 hover:bg-purple-400 text-white hover:text-gray-100 transition-all ease-in-out duration-300'>
-                                Login
+                                Login User
                             </button>
                         </div>
                         {
-                            message 
-                            ? <p className='text-center text-red-500'>{message}</p>
-                            : null
+                            !message 
+                            ? null
+                            : <p className={`bg-${message?.color}-200 rounded-lg p-5 text-center text-${message?.color}-600`}>
+                                {message?.value}
+                            </p>
                         }
                     </form>
                     

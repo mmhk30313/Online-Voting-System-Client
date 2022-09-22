@@ -243,7 +243,7 @@ const AddUser = () => {
                     {
                         !message
                         ? null 
-                        : <p className={`text-center text-${message?.color}-500`}>{message?.value}</p>
+                        : <p className={`bg-${message?.color}-200 p-5 rounded-full text-center text-${message?.color}-700`}>{message?.value}</p>
                     }
                 </div>
             </div>

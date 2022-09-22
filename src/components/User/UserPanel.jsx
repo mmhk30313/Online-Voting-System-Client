@@ -10,7 +10,7 @@ const UserPanel = () => {
     console.log({activeElections});
     return (
         <React.Fragment>
-            <div className="user-panel w-full bg-indigo-600 min-h-[70vh] rounded-lg p-10">
+            <div className="user-panel w-full bg-indigo-600 min-h-[50vh] rounded-lg py-5 px-10">
                 {
                     !activeElections?.data?.length ? (
                         <>
